@@ -44,8 +44,8 @@ def formatTitle(title):
 for row in rows:
     category = row[0]
     gender = row[1]
-    views = row[2]
-    drug = row[3]
+    drug = row[2]
+    views = row[3]
     substances = ast.literal_eval(row[5])
     body_text = row[6]
     text = TextBlob(row[6])
@@ -68,6 +68,10 @@ for row in rows:
         for sentence in sentences:
             if len(sentence) < 80  and len(sentence) > 60 and sentence[0] in letters and sentence[len(sentence) - 1] in punctuation and unicode not in sentence:
                 text = TextBlob(str(sentence))
+
+                cur.execute("""INSERT INTO erowid.sentences (substance, sentence, sentiment) VALUES (%s, %s, %s);""",(drug, str(text), text.sentiment.polarity))
+                conn.commit();
+
                 if text.sentiment.polarity > .9 and text.sentiment.subjectivity > .7:
                     goodSentence = sentence
                 if text.sentiment.polarity < -.9 and text.sentiment.subjectivity > .7:
