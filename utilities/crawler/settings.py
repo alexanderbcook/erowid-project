@@ -16,7 +16,7 @@ NEWSPIDER_MODULE = 'crawler.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = “Erowid Sentiment Analysis Project (https://github.com/alexanderbcook/#erowid)”
+USER_AGENT = “Erowid Sentiment Analysis Project (https://databyalex.com/erowid/sentiment)”
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
