@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 import psycopg2
 import time
 import config
+from config import *
 
 categoryRequest = requests.get('https://erowid.org/experiences/research/exp_api.php?api_code='+api_key+'&a=category_list&format=xml')
 

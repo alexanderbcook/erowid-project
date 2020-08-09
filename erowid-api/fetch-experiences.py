@@ -4,6 +4,7 @@ import psycopg2
 import time
 import sys
 import config
+from config import *
 
 try:
     conn = psycopg2.connect("dbname='postgres'")
@@ -22,7 +23,7 @@ for value in cursor.fetchall():
     experienceAlreadyCaptured.append(str(value[0]))
 
 #Fetch list of substance IDs.
-cursor.execute("SELECT id, name FROM erowid.substances ORDER BY id DESC;")
+cursor.execute("SELECT id, name FROM erowid.substances ORDER BY id ASC;")
 
 #Iterate through each substance, fetch list of experiences.
 for value in cursor.fetchall():
@@ -39,7 +40,7 @@ for value in cursor.fetchall():
 
         #Iterate through each experience. Check if it has already been processesed. 
         for experienceId in experienceArray:
-
+            time.sleep(.15)
             if not str(experienceId) in experienceAlreadyCaptured:
 
                 experienceRequest = requests.get('https://erowid.org/experiences/research/exp_api.php?api_code='+api_key+'&a=experience_data&experience_id='+experienceId+'&format=xml', headers=headers)
@@ -59,7 +60,6 @@ for value in cursor.fetchall():
                         print('Record uploaded!')
 
                         experienceAlreadyCaptured.append(child.find('id').text)
-                        time.sleep(.33)
                 except:
                     pass
 
