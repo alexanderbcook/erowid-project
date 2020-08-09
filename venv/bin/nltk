@@ -1,4 +1,4 @@
-#!/Users/alexandercook/Repositories/erowid/venv/bin/python3
+#!/Users/alexandercook/Repositories/erowid-project/venv/bin/python3
 # EASY-INSTALL-ENTRY-SCRIPT: 'nltk==3.5','console_scripts','nltk'
 __requires__ = 'nltk==3.5'
 import re
