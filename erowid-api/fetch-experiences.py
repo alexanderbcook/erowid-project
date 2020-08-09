@@ -3,10 +3,7 @@ import xml.etree.ElementTree as ET
 import psycopg2
 import time
 import sys
-
-headers = {
-    'User-Agent': 'Erowid Sentiment Analysis Project'
-    }
+import config
 
 try:
     conn = psycopg2.connect("dbname='postgres'")
@@ -28,7 +25,7 @@ for value in cursor.fetchall():
     substanceId = value[0]
     substanceName = value[1]
 
-    experienceListXmlComplete = requests.get('https://erowid.org/experiences/research/exp_api.php?api_code=SentimentAnalysis2020a&a=experience_list&substance_id='+str(substanceId)+'&format=xml', headers=headers)
+    experienceListXmlComplete = requests.get('https://erowid.org/experiences/research/exp_api.php?api_code='+api_key+'&a=experience_list&substance_id='+str(substanceId)+'&format=xml', headers=headers)
     experienceListXmlSplit = experienceListXmlComplete.text.split('</request-parameters>')[1]
     root = ET.fromstring(experienceListXmlSplit)
     
@@ -39,8 +36,8 @@ for value in cursor.fetchall():
         for experienceId in experienceArray:
             if not str(experienceId) in experienceAlreadyCaptured:
 
-                experienceRequest = requests.get('https://erowid.org/experiences/research/exp_api.php?api_code=SentimentAnalysis2020a&a=experience_data&experience_id='+experienceId+'&format=xml', headers=headers)
-                print('Fetched '+substanceName+' experience from URL: https://erowid.org/experiences/research/exp_api.php?api_code=SentimentAnalysis2020a&a=experience_data&experience_id='+experienceId+'&format=xml')
+                experienceRequest = requests.get('https://erowid.org/experiences/research/exp_api.php?api_code='+api_key+'&a=experience_data&experience_id='+experienceId+'&format=xml', headers=headers)
+                print('Fetched '+substanceName+' experience from URL: https://erowid.org/experiences/research/exp_api.php?api_code='+api_key+'&a=experience_data&experience_id='+experienceId+'&format=xml')
 
                 experienceXmlData = experienceRequest.text.split('</request-parameters>')[1]
                 try:

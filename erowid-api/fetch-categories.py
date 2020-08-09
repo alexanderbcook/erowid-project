@@ -2,8 +2,9 @@ import requests
 import xml.etree.ElementTree as ET
 import psycopg2
 import time
+import config
 
-categoryRequest = requests.get('https://erowid.org/experiences/research/exp_api.php?api_code=SentimentAnalysis2020a&a=category_list&format=xml')
+categoryRequest = requests.get('https://erowid.org/experiences/research/exp_api.php?api_code='+api_key+'&a=category_list&format=xml')
 
 try:
     conn = psycopg2.connect("dbname='postgres'")
@@ -12,10 +13,6 @@ except:
 
 cursor = conn.cursor()
 cursor.execute("CREATE TABLE IF NOT EXISTS erowid.categories (id INT PRIMARY KEY, name VARCHAR, type VARCHAR, primary_category VARCHAR)")    
-
-headers = {
-    'User-Agent': 'Erowid Sentiment Analysis Project (https://databyalex.com/erowid/sentiment)'
-    }
 
 xmlData = categoryRequest.text
 root = ET.fromstring(xmlData.replace('&',''))

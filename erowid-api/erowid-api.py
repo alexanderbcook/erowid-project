@@ -2,6 +2,7 @@ import requests
 import xml.etree.ElementTree as ET
 import psycopg2
 import time
+import config
 
 headers = {
     'User-Agent': 'Erowid Sentiment Analysis Project (https://databyalex.com/erowid/sentiment)'
@@ -20,15 +21,15 @@ for value in cursor.fetchall():
     substanceId = value[0]
     substanceName = value[1]
 
-    experienceListXmlComplete = requests.get('https://erowid.org/experiences/research/exp_api.php?api_code=SentimentAnalysis2020a&a=experience_list&substance_id='+str(substanceId)+'&format=xml', headers=headers)
+    experienceListXmlComplete = requests.get('https://erowid.org/experiences/research/exp_api.php?api_code='+api_key+'&a=experience_list&substance_id='+str(substanceId)+'&format=xml', headers=headers)
     experienceListXmlSplit = experienceListXmlComplete.text.split('</request-parameters>')[1]
     root = ET.fromstring(experienceListXmlSplit)
     
     for child in root.findall('experience-id-list-result'):
         experienceArray = child.text.split(', ')
         for experienceId in experienceArray:
-            experienceRequest = requests.get('https://erowid.org/experiences/research/exp_api.php?api_code=SentimentAnalysis2020a&a=experience_data&experience_id='+experienceId+'&format=xml', headers=headers)
-            print('Fetched '+substanceName+' experience from URL: https://erowid.org/experiences/research/exp_api.php?api_code=SentimentAnalysis2020a&a=experience_data&experience_id='+experienceId+'&format=xml')
+            experienceRequest = requests.get('https://erowid.org/experiences/research/exp_api.php?api_code='+api_key+'&a=experience_data&experience_id='+experienceId+'&format=xml', headers=headers)
+            print('Fetched '+substanceName+' experience from URL: https://erowid.org/experiences/research/exp_api.php?api_code='+api_key+'&a=experience_data&experience_id='+experienceId+'&format=xml')
             time.sleep(0.125);
 
             experienceXmlData = experienceRequest.text.split('</request-parameters>')[1]
@@ -40,7 +41,7 @@ for value in cursor.fetchall():
                     conn.commit()
                     print('Record uploaded!')
                 except:
-                    print('Unable to insert record for: https://erowid.org/experiences/research/exp_api.php?api_code=SentimentAnalysis2020a&a=experience_data&experience_id='+experienceId+'&format=xml')
+                    print('Unable to insert record for: https://erowid.org/experiences/research/exp_api.php?api_code='+api_key+'&a=experience_data&experience_id='+experienceId+'&format=xml')
 
 cursor.close()
 conn.close()
